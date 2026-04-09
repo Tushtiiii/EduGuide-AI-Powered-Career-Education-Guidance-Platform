@@ -13,7 +13,70 @@ import {
   ArrowUp
 } from 'lucide-react';
 import Link from 'next/link';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+const SalaryTrendChart = () => {
+  const maxSalary = Math.max(...salaryData.map(entry => entry.salary));
+  const points = salaryData
+    .map((entry, index) => {
+      const x = (index / Math.max(salaryData.length - 1, 1)) * 100;
+      const y = 100 - (entry.salary / maxSalary) * 100;
+      return `${x},${y}`;
+    })
+    .join(' ');
+
+  return (
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-36">
+      <defs>
+        <linearGradient id="salaryGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(37, 99, 235, 0.35)" />
+          <stop offset="100%" stopColor="rgba(37, 99, 235, 0)" />
+        </linearGradient>
+      </defs>
+      <polyline
+        points={`0,100 ${points} 100,100`}
+        fill="url(#salaryGradient)"
+        stroke="none"
+      />
+      <polyline
+        points={points}
+        fill="none"
+        stroke="#2563eb"
+        strokeWidth={2.5}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      {salaryData.map((entry, index) => {
+        const x = (index / Math.max(salaryData.length - 1, 1)) * 100;
+        const y = 100 - (entry.salary / maxSalary) * 100;
+        return (
+          <circle key={entry.experience} cx={x} cy={y} r={2.8} fill="#2563eb" />
+        );
+      })}
+    </svg>
+  );
+};
+
+const GrowthBarChart = () => {
+  const maxGrowth = Math.max(...growthData.map(entry => entry.growth));
+
+  return (
+    <div className="space-y-2">
+      {growthData.map(entry => (
+        <div key={entry.field}>
+          <div className="flex justify-between text-xs text-gray-600 mb-1">
+            <span>{entry.field}</span>
+            <span className="font-semibold text-gray-700">{entry.growth}%</span>
+          </div>
+          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-green-400 to-green-600"
+              style={{ width: `${(entry.growth / maxGrowth) * 100}%` }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 interface CareerPath {
   id: number;
@@ -174,15 +237,15 @@ export default function CareersPage() {
                 <TrendingUp className="h-6 w-6 text-blue-600" />
               </div>
               <h3 className="text-xl text-gray-700 font-bold mb-2">Average Salary Growth</h3>
-              <ResponsiveContainer width="100%" height={150}>
-                <LineChart data={salaryData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="experience" fontSize={12} />
-                  <YAxis fontSize={12} />
-                  <Tooltip formatter={(value: number) => [`₹${(value/100000).toFixed(1)}L`, 'Salary']} />
-                  <Line type="monotone" dataKey="salary" stroke="#2563eb" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
+              <SalaryTrendChart />
+              <div className="mt-3 flex justify-between text-xs text-gray-500">
+                {salaryData.map(entry => (
+                  <div key={entry.experience} className="text-center flex-1">
+                    <div className="font-medium text-gray-700">₹{(entry.salary / 100000).toFixed(1)}L</div>
+                    <div>{entry.experience}</div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-lg p-6">
@@ -190,15 +253,7 @@ export default function CareersPage() {
                 <ArrowUp className="h-6 w-6 text-green-600" />
               </div>
               <h3 className="text-xl text-gray-700 font-bold mb-2">Job Growth by Field</h3>
-              <ResponsiveContainer width="100%" height={150}>
-                <BarChart data={growthData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="field" fontSize={12} />
-                  <YAxis fontSize={12} />
-                  <Tooltip formatter={(value: number) => [`${value}%`, 'Growth']} />
-                  <Bar dataKey="growth" fill="#10b981" />
-                </BarChart>
-              </ResponsiveContainer>
+              <GrowthBarChart />
             </div>
 
             <div className="bg-white rounded-xl shadow-lg p-6">
