@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+~~import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
 import { User, College } from '../../../lib/models';
@@ -202,7 +202,7 @@ export async function GET() {
 
   try {
     await connectToDatabase();
-    const user = await User.findOne({ email: session.user.email }).lean();
+    const user = (await User.findOne({ email: session.user.email }).lean()) as Record<string, any> | null;
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
