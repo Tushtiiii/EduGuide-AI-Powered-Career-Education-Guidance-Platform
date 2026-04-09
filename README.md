@@ -1,4 +1,5 @@
 # EduGuide - Digital Guidance Platform for Students
+https://edu-guide-ai-powered-caree-git-b6b624-tushtee-kothares-projects.vercel.app/
 
 A comprehensive one-stop personalized career and education advisor designed to help students make informed decisions about their educational journey and career paths.
 
