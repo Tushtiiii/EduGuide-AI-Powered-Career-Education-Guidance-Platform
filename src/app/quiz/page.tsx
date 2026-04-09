@@ -357,13 +357,13 @@ export default function AptitudeQuiz() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">
                   Recommended Stream: <span className="text-blue-600">{result.stream}</span>
                 </h2>
-                <p className="text-gray-700 mb-6">{aiRecommendation ? result.assessment : result.description}</p>
+                <p className="text-gray-700 mb-6">{'assessment' in result ? (result as AIRecommendation).assessment : (result as { description: string }).description}</p>
                 
-                {aiRecommendation && result.strengths && (
+                {aiRecommendation && (result as AIRecommendation).strengths && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">Your Key Strengths:</h3>
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {result.strengths.map((strength, index) => (
+                      {(result as AIRecommendation).strengths.map((strength, index) => (
                         <span key={index} className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
                           {strength}
                         </span>
@@ -381,11 +381,11 @@ export default function AptitudeQuiz() {
                   ))}
                 </div>
                 
-                {aiRecommendation && result.colleges && (
+                {aiRecommendation && (result as AIRecommendation).colleges && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">Recommended Colleges:</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {result.colleges.map((college, index) => (
+                      {(result as AIRecommendation).colleges.map((college, index) => (
                         <div key={index} className="bg-purple-50 text-purple-700 px-4 py-2 rounded-lg font-medium">
                           {college}
                         </div>

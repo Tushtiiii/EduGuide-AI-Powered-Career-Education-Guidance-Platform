@@ -1,4 +1,4 @@
-~~import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
 import { User, College } from '../../../lib/models';
@@ -233,7 +233,7 @@ export async function GET() {
         .lean();
 
       colleges.forEach((college) => {
-        const id = college._id.toString();
+        const id = (college._id as unknown as { toString: () => string }).toString();
         const dbResponse: SavedCollegeResponse = {
           _id: id,
           collegeId: id,
@@ -299,7 +299,7 @@ export async function POST(req: NextRequest) {
         }
         return null;
       })
-      .filter((id): id is string => typeof id === 'string' && id.length > 0);
+      .filter((id: unknown): id is string => typeof id === 'string' && id.length > 0);
 
     const alreadySaved = existingIds.includes(collegeId);
 
